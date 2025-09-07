@@ -1,5 +1,4 @@
 name: Auto-merge auto to master and deploy to Pages
-
 on:
   push:
     branches:
@@ -24,7 +23,6 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
-
     steps:
       - name: Debug current branch
         run: |
@@ -90,6 +88,11 @@ jobs:
         run: |
           git push origin master
           git push origin auto
+
+      # Switch back to master branch before deploying
+      - name: Switch to master for deployment
+        if: steps.merge.outputs.changes_made == 'true'
+        run: git checkout master
 
       # Deploy to GitHub Pages only if changes were made to master
       - name: Setup Pages
