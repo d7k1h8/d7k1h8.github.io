@@ -2,8 +2,6 @@ name: Auto-merge auto to master
 
 on:
   push:
-    branches:
-      - auto
   workflow_dispatch:
 
 permissions:
