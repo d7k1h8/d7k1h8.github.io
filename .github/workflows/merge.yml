@@ -2,6 +2,11 @@ name: Auto-merge auto to master
 
 on:
   push:
+    branches:
+      - master
+      - auto
+    paths:
+      - 'couldron/**'
   workflow_dispatch:
 
 permissions:
@@ -20,7 +25,6 @@ jobs:
         run: |
           echo "Current branch from GitHub context: ${{ github.ref_name }}"
           echo "Full ref: ${{ github.ref }}"
-          echo "Expected: auto"
 
       - name: Checkout
         uses: actions/checkout@v4
