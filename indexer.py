@@ -1,199 +1,169 @@
 #!/usr/bin/env python3
 from pathlib import Path
 from PIL import Image
-from PIL.ExifTags import TAGS
-import math
+from fractions import Fraction
 
 def format_file_size(size_bytes):
     """Convert bytes to human readable format."""
     for unit in ['B', 'KB', 'MB', 'GB']:
         if size_bytes < 1024.0:
-            if unit == 'B':
-                return f"{int(size_bytes)} {unit}"
-            else:
-                return f"{size_bytes:.1f} {unit}"
+            return f"{int(size_bytes)} {unit}" if unit == 'B' else f"{size_bytes:.1f} {unit}"
         size_bytes /= 1024.0
     return f"{size_bytes:.1f} TB"
-
-def gcd(a, b):
-    """Calculate greatest common divisor."""
-    while b:
-        a, b = b, a % b
-    return a
 
 def get_aspect_ratio(width, height):
     """Calculate and format aspect ratio."""
     if not width or not height:
         return None
 
-    divisor = gcd(width, height)
-    ratio_w = width // divisor
-    ratio_h = height // divisor
+    # Calculate ratio and try to simplify to common ratios
+    ratio = width / height
 
-    # Common aspect ratios with more readable names
+    # Check for common aspect ratios first
     common_ratios = {
-        (16, 9): "16:9",
-        (4, 3): "4:3",
-        (3, 2): "3:2",
-        (1, 1): "1:1",
-        (5, 4): "5:4",
-        (3, 4): "3:4",
-        (2, 3): "2:3",
-        (9, 16): "9:16"
+        16/9: "16:9",
+        4/3: "4:3",
+        3/2: "3:2",
+        1/1: "1:1",
+        9/16: "9:16",
+        3/4: "3:4",
+        2/3: "2:3"
     }
 
-    return common_ratios.get((ratio_w, ratio_h), f"{ratio_w}:{ratio_h}")
+    for r, name in common_ratios.items():
+        if abs(ratio - r) < 0.01:  # Allow small tolerance
+            return name
 
-def get_date_taken(image):
-    """Extract date taken from EXIF data."""
+    # For other ratios, use fraction simplification
     try:
-        exif = image.getexif()
-        if exif:
-            for tag_id, value in exif.items():
-                tag = TAGS.get(tag_id, tag_id)
-                if tag == "DateTime":
-                    # Format: "YYYY:MM:DD HH:MM:SS" -> "YYYY-MM-DD"
-                    return value.split()[0].replace(":", "-")
+        frac = Fraction(width, height).limit_denominator(100)
+        return f"{frac.numerator}:{frac.denominator}"
     except:
-        pass
-    return None
+        return f"{ratio:.2f}:1"
 
 def get_image_info(file_path):
-    """Get image dimensions, file size, date taken, and aspect ratio."""
+    """Get image dimensions and file size."""
     try:
         with Image.open(file_path) as img:
             width, height = img.size
-            date_taken = get_date_taken(img)
-
         file_size = file_path.stat().st_size
         aspect_ratio = get_aspect_ratio(width, height)
-
-        return width, height, file_size, date_taken, aspect_ratio
+        return width, height, file_size, aspect_ratio
     except Exception as e:
         print(f"Warning: Could not read image info for {file_path}: {e}")
         file_size = file_path.stat().st_size if file_path.exists() else 0
-        return None, None, file_size, None, None
+        return None, None, file_size, None
 
-def generate_directory_index(base_dir="docs", output_file="docs/index.html"):
+def generate_directory_index(base_dir="docs"):
     """Generate main index with directory links."""
-    script_dir = Path(__file__).parent.resolve()
-    base_path = (script_dir / base_dir).resolve()
-    output_path = (script_dir / output_file).resolve()
+    base_path = Path(base_dir)
 
     # Find directories with .webp files
     directories = []
     for dir_path in base_path.iterdir():
-        if dir_path.is_dir() and list(dir_path.glob("*.webp")):
-            webp_count = len(list(dir_path.glob("*.webp")))
-            directories.append((dir_path.name, webp_count))
+        if dir_path.is_dir():
+            webp_files = list(dir_path.glob("*.webp"))
+            if webp_files:
+                directories.append((dir_path.name, len(webp_files)))
 
     if not directories:
         print(f"No directories with .webp files found in {base_path}")
         return False
 
-    directories.sort()  # Sort alphabetically
+    directories.sort()
 
-    # Generate directory links
+    # Generate HTML
     links = "\n".join(
-        f'\t\t<p><a href="{dir_name}.html">{dir_name}/</a> ({count} images)</p>'
-        for dir_name, count in directories
+        f'\t\t<p><a href="{name}.html">{name}/</a> ({count} images)</p>'
+        for name, count in directories
     )
 
     html = f"""<!DOCTYPE html>
 <html lang="en">
-\t<head>
-\t\t<meta charset="UTF-8">
-\t\t<title>WebP Image Directories</title>
-\t\t<style>
-\t\t\t/* Minimal CSS for directory listing */
-\t\t\tbody {{ text-align: center; font-family: sans-serif; }}
-\t\t\th1 {{ margin: 40px 0; }}
-\t\t\tp {{ margin: 15px 0; }}
-\t\t\ta {{ text-decoration: none; font-size: 1.1em; }}
-\t\t\ta:hover {{ text-decoration: underline; }}
-\t\t</style>
-\t</head>
-\t<body>
-\t\t<h1>WebP Image Directories</h1>
+<head>
+\t<meta charset="UTF-8">
+\t<title>WebP Image Directories</title>
+\t<style>
+\t\tbody {{ text-align: center; font-family: sans-serif; }}
+\t\th1 {{ margin: 40px 0; }}
+\t\tp {{ margin: 15px 0; }}
+\t\ta {{ text-decoration: none; font-size: 1.1em; }}
+\t\ta:hover {{ text-decoration: underline; }}
+\t</style>
+</head>
+<body>
+\t<h1>WebP Image Directories</h1>
 {links}
-\t</body>
+</body>
 </html>"""
 
+    output_path = Path(base_dir) / "index.html"
     output_path.write_text(html, encoding="utf-8")
     print(f"Generated main index {output_path} with {len(directories)} directories")
     return True
 
 def generate_webp_index(source_dir, output_file):
-    """Generate HTML index file for .webp images with centered vertical layout."""
-    script_dir = Path(__file__).parent.resolve()
-    source = (script_dir / source_dir).resolve()
-    output_path = (script_dir / output_file).resolve()
-
+    """Generate HTML index file for .webp images."""
+    source = Path(source_dir)
     webp_files = sorted(source.glob("*.webp"))
+
     if not webp_files:
         print(f"No .webp files found in {source}")
         return False
 
-    dir_name = Path(source_dir).name
+    dir_name = source.name
 
-    # Generate image figures with file info
+    # Generate image figures
     figures = []
     for f in webp_files:
-        width, height, file_size, date_taken, aspect_ratio = get_image_info(f)
+        width, height, file_size, aspect_ratio = get_image_info(f)
         size_str = format_file_size(file_size)
 
-        # Build info parts
+        # Build caption info
         info_parts = []
         if width and height:
             info_parts.append(f"{width}×{height}")
         if aspect_ratio:
             info_parts.append(aspect_ratio)
         info_parts.append(size_str)
-        if date_taken:
-            info_parts.append(date_taken)
 
         caption = f"{f.name}<br><small>{' • '.join(info_parts)}</small>"
-
         figures.append(
             f'\t\t<figure>\n\t\t\t<img src="{dir_name}/{f.name}" alt="{f.stem}">\n\t\t\t<figcaption>{caption}</figcaption>\n\t\t</figure>'
         )
 
-    body = "\n".join(figures)
-
     html = f"""<!DOCTYPE html>
 <html lang="en">
-\t<head>
-\t\t<meta charset="UTF-8">
-\t\t<title>WebP Images - {dir_name}</title>
-\t\t<style>
-\t\t\t/* Minimal CSS for vertical centered images with captions */
-\t\t\tbody {{ text-align: center; }}
-\t\t\tfigure {{ margin: 20px 0; }}
-\t\t\tfigcaption {{ margin-top: 5px; font-size: 0.9em; line-height: 1.3; }}
-\t\t\tfigcaption small {{ color: #666; font-size: 0.8em; }}
-\t\t\timg {{ display: block; margin: 0 auto; max-width: 90%; height: auto; }}
-\t\t\t.back-link {{ margin: 20px 0; font-size: 1.1em; }}
-\t\t\t.back-link a {{ text-decoration: none; }}
-\t\t\t.back-link a:hover {{ text-decoration: underline; }}
-\t\t</style>
-\t</head>
-\t<body>
-\t\t<div class="back-link">
-\t\t\t<a href="index.html">← Back to directories</a>
-\t\t</div>
-\t\t<h1>{dir_name}</h1>
-{body}
-\t</body>
+<head>
+\t<meta charset="UTF-8">
+\t<title>WebP Images - {dir_name}</title>
+\t<style>
+\t\tbody {{ text-align: center; font-family: sans-serif; }}
+\t\tfigure {{ margin: 20px 0; }}
+\t\tfigcaption {{ margin-top: 5px; font-size: 0.9em; line-height: 1.3; }}
+\t\tfigcaption small {{ color: #666; font-size: 0.8em; }}
+\t\timg {{ display: block; margin: 0 auto; max-width: 90%; height: auto; }}
+\t\t.back-link {{ margin: 20px 0; font-size: 1.1em; }}
+\t\t.back-link a {{ text-decoration: none; }}
+\t\t.back-link a:hover {{ text-decoration: underline; }}
+\t</style>
+</head>
+<body>
+\t<div class="back-link">
+\t\t<a href="index.html">← Back to directories</a>
+\t</div>
+\t<h1>{dir_name}</h1>
+{"".join(figures)}
+</body>
 </html>"""
 
-    output_path.write_text(html, encoding="utf-8")
-    print(f"Generated {output_path} with {len(webp_files)} images")
+    Path(output_file).write_text(html, encoding="utf-8")
+    print(f"Generated {output_file} with {len(webp_files)} images")
     return True
 
 def generate_all_indexes(base_dir="docs"):
     """Generate main directory index and individual directory pages."""
-    script_dir = Path(__file__).parent.resolve()
-    base_path = (script_dir / base_dir).resolve()
+    base_path = Path(base_dir)
 
     # Generate main directory listing
     generate_directory_index(base_dir)
