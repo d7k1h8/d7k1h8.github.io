@@ -161,9 +161,14 @@ sub generate_dir_page {
 	my $dir_name = ($dir_path =~ m|([^/]+)/?$|)[0];  # basename equivalent
 
 	opendir my $dh, $dir_path or return;
-	my @webp_files = sort grep { /\.webp$/i } readdir $dh;
+	my @webp_files = grep { /\.webp$/i } readdir $dh;
 	closedir $dh;
 	return unless @webp_files;
+
+	# Sort by modification time (newest first)
+	@webp_files = sort {
+		(stat("$dir_path/$b"))[9] <=> (stat("$dir_path/$a"))[9]
+	} @webp_files;
 
 	my @figures;
 	for my $file (@webp_files) {
