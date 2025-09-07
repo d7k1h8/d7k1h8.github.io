@@ -44,7 +44,7 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
-      #  Run indexer.pl to generate files in docs/
+      # Run indexer.pl to generate files in docs/
       - name: Run indexer script and commit changes
         id: indexer
         run: |
