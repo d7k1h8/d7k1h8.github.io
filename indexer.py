@@ -47,4 +47,3 @@ def generate_webp_index(source_dir="docs/images", output_file="docs/index.html")
 
 if __name__ == "__main__":
     generate_webp_index()
-
