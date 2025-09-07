@@ -90,13 +90,20 @@ def generate_webp_index(source_dir, output_file):
     # Generate image figures with file info
     figures = []
     for f in webp_files:
-        width, height, file_size = get_image_info(f)
+        width, height, file_size, date_taken, aspect_ratio = get_image_info(f)
         size_str = format_file_size(file_size)
 
+        # Build info parts
+        info_parts = []
         if width and height:
-            caption = f"{f.name}<br><small>{width}×{height} • {size_str}</small>"
-        else:
-            caption = f"{f.name}<br><small>{size_str}</small>"
+            info_parts.append(f"{width}×{height}")
+        if aspect_ratio:
+            info_parts.append(aspect_ratio)
+        info_parts.append(size_str)
+        if date_taken:
+            info_parts.append(date_taken)
+
+        caption = f"{f.name}<br><small>{' • '.join(info_parts)}</small>"
 
         figures.append(
             f'\t\t<figure>\n\t\t\t<img src="{dir_name}/{f.name}" alt="{f.stem}">\n\t\t\t<figcaption>{caption}</figcaption>\n\t\t</figure>'
