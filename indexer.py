@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 from pathlib import Path
 from PIL import Image
+from PIL.ExifTags import TAGS
+import math
 
 def format_file_size(size_bytes):
     """Convert bytes to human readable format."""
@@ -13,17 +15,64 @@ def format_file_size(size_bytes):
         size_bytes /= 1024.0
     return f"{size_bytes:.1f} TB"
 
+def gcd(a, b):
+    """Calculate greatest common divisor."""
+    while b:
+        a, b = b, a % b
+    return a
+
+def get_aspect_ratio(width, height):
+    """Calculate and format aspect ratio."""
+    if not width or not height:
+        return None
+
+    divisor = gcd(width, height)
+    ratio_w = width // divisor
+    ratio_h = height // divisor
+
+    # Common aspect ratios with more readable names
+    common_ratios = {
+        (16, 9): "16:9",
+        (4, 3): "4:3",
+        (3, 2): "3:2",
+        (1, 1): "1:1",
+        (5, 4): "5:4",
+        (3, 4): "3:4",
+        (2, 3): "2:3",
+        (9, 16): "9:16"
+    }
+
+    return common_ratios.get((ratio_w, ratio_h), f"{ratio_w}:{ratio_h}")
+
+def get_date_taken(image):
+    """Extract date taken from EXIF data."""
+    try:
+        exif = image.getexif()
+        if exif:
+            for tag_id, value in exif.items():
+                tag = TAGS.get(tag_id, tag_id)
+                if tag == "DateTime":
+                    # Format: "YYYY:MM:DD HH:MM:SS" -> "YYYY-MM-DD"
+                    return value.split()[0].replace(":", "-")
+    except:
+        pass
+    return None
+
 def get_image_info(file_path):
-    """Get image dimensions and file size."""
+    """Get image dimensions, file size, date taken, and aspect ratio."""
     try:
         with Image.open(file_path) as img:
             width, height = img.size
+            date_taken = get_date_taken(img)
+
         file_size = file_path.stat().st_size
-        return width, height, file_size
+        aspect_ratio = get_aspect_ratio(width, height)
+
+        return width, height, file_size, date_taken, aspect_ratio
     except Exception as e:
         print(f"Warning: Could not read image info for {file_path}: {e}")
         file_size = file_path.stat().st_size if file_path.exists() else 0
-        return None, None, file_size
+        return None, None, file_size, None, None
 
 def generate_directory_index(base_dir="docs", output_file="docs/index.html"):
     """Generate main index with directory links."""
