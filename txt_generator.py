@@ -12,7 +12,7 @@ import os
 script_dir = os.path.dirname(os.path.abspath(__file__))
 
 # Build output path relative to script directory
-output_dir = script_dir + "/docs/images"
+output_dir = script_dir + "/docs/dir0"
 
 # Ensure directory exists
 os.makedirs(output_dir, exist_ok=True)
