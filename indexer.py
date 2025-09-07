@@ -1,5 +1,29 @@
 #!/usr/bin/env python3
 from pathlib import Path
+from PIL import Image
+
+def format_file_size(size_bytes):
+    """Convert bytes to human readable format."""
+    for unit in ['B', 'KB', 'MB', 'GB']:
+        if size_bytes < 1024.0:
+            if unit == 'B':
+                return f"{int(size_bytes)} {unit}"
+            else:
+                return f"{size_bytes:.1f} {unit}"
+        size_bytes /= 1024.0
+    return f"{size_bytes:.1f} TB"
+
+def get_image_info(file_path):
+    """Get image dimensions and file size."""
+    try:
+        with Image.open(file_path) as img:
+            width, height = img.size
+        file_size = file_path.stat().st_size
+        return width, height, file_size
+    except Exception as e:
+        print(f"Warning: Could not read image info for {file_path}: {e}")
+        file_size = file_path.stat().st_size if file_path.exists() else 0
+        return None, None, file_size
 
 def generate_directory_index(base_dir="docs", output_file="docs/index.html"):
     """Generate main index with directory links."""
@@ -63,10 +87,22 @@ def generate_webp_index(source_dir, output_file):
 
     dir_name = Path(source_dir).name
 
-    body = "\n".join(
-        f'\t\t<figure>\n\t\t\t<img src="{dir_name}/{f.name}" alt="{f.stem}">\n\t\t\t<figcaption>{f.name}</figcaption>\n\t\t</figure>'
-        for f in webp_files
-    )
+    # Generate image figures with file info
+    figures = []
+    for f in webp_files:
+        width, height, file_size = get_image_info(f)
+        size_str = format_file_size(file_size)
+
+        if width and height:
+            caption = f"{f.name}<br><small>{width}×{height} • {size_str}</small>"
+        else:
+            caption = f"{f.name}<br><small>{size_str}</small>"
+
+        figures.append(
+            f'\t\t<figure>\n\t\t\t<img src="{dir_name}/{f.name}" alt="{f.stem}">\n\t\t\t<figcaption>{caption}</figcaption>\n\t\t</figure>'
+        )
+
+    body = "\n".join(figures)
 
     html = f"""<!DOCTYPE html>
 <html lang="en">
@@ -77,7 +113,8 @@ def generate_webp_index(source_dir, output_file):
 \t\t\t/* Minimal CSS for vertical centered images with captions */
 \t\t\tbody {{ text-align: center; }}
 \t\t\tfigure {{ margin: 20px 0; }}
-\t\t\tfigcaption {{ margin-top: 5px; font-size: 0.9em; }}
+\t\t\tfigcaption {{ margin-top: 5px; font-size: 0.9em; line-height: 1.3; }}
+\t\t\tfigcaption small {{ color: #666; font-size: 0.8em; }}
 \t\t\timg {{ display: block; margin: 0 auto; max-width: 90%; height: auto; }}
 \t\t\t.back-link {{ margin: 20px 0; font-size: 1.1em; }}
 \t\t\t.back-link a {{ text-decoration: none; }}
