@@ -1,8 +1,6 @@
 #!/usr/bin/env perl
-
 use strict;
 use warnings;
-use File::Basename;
 
 sub format_file_size {
 	my $size = shift;
@@ -160,7 +158,7 @@ sub generate_main_index {
 
 sub generate_dir_page {
 	my $dir_path = shift;
-	my $dir_name = basename($dir_path);
+	my $dir_name = ($dir_path =~ m|([^/]+)/?$|)[0];  # basename equivalent
 
 	opendir my $dh, $dir_path or return;
 	my @webp_files = sort grep { /\.webp$/i } readdir $dh;
@@ -171,10 +169,10 @@ sub generate_dir_page {
 	for my $file (@webp_files) {
 		my ($width, $height, $file_size, $aspect_ratio) = get_image_info("$dir_path/$file");
 
-		my @info = grep defined,
-		($width && $height ? "${width}×${height}" : undef),
-		$aspect_ratio,
-		format_file_size($file_size);
+		my @info;
+		push @info, "${width}×${height}" if $width && $height;
+		push @info, $aspect_ratio if $aspect_ratio;
+		push @info, format_file_size($file_size);
 
 		my $caption = "$file<br><small>" . join(' • ', @info) . "</small>";
 		push @figures, qq(<figure><img src="$dir_name/$file"><figcaption>$caption</figcaption></figure>);
@@ -183,7 +181,8 @@ sub generate_dir_page {
 	my $html = create_html("WebP Images - $dir_name",
 		"<h1>$dir_name</h1>\n\t" . join("\n\t", @figures), 1);
 
-	my $output_file = dirname($dir_path) . "/$dir_name.html";
+	my ($parent_dir) = ($dir_path =~ m|^(.*)/[^/]+/?$|);  # dirname equivalent
+	my $output_file = "$parent_dir/$dir_name.html";
 	open my $fh, '>', $output_file or die "Cannot write $output_file: $!";
 	print $fh $html;
 	close $fh;
