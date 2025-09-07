@@ -2,7 +2,7 @@
 
 from pathlib import Path
 
-def generate_webp_index(source_dir="images", output_file="docs/index.html"):
+def generate_webp_index(source_dir="docs/images", output_file="docs/index.html"):
     """Generate HTML index file for .webp images with centered vertical layout."""
 
     # Get directory of the current script
@@ -11,6 +11,7 @@ def generate_webp_index(source_dir="images", output_file="docs/index.html"):
     # Resolve source and output paths relative to script_dir
     source = (script_dir / source_dir).resolve()
     output_file = (script_dir / output_file).resolve()
+    print(source_dir)
 
     webp_files = sorted(source.glob("*.webp"))
 
