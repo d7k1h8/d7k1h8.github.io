@@ -54,7 +54,7 @@ jobs:
             # Extract tar files and remove them
             find . -name '*.tar' -type f -printf 'extracting %f\n' -exec tar -xf '{}' \; -delete
             cd ../..
-            ./indexer.py
+            ./indexer.pl
 
             # Commit master changes
             git add -A
