@@ -1,10 +1,8 @@
 #!/usr/bin/env perl
 
-#!/usr/bin/env perl
 use strict;
 use warnings;
 use File::Basename;
-
 
 sub format_file_size {
 	my $size = shift;
@@ -113,7 +111,7 @@ sub get_image_info {
 
 	my $file_size = -s $file_path;
 	my ($width, $height) = get_webp_dimensions($file_path);
-	my $aspect_ratio = get_aspect_ratio($width, $height);
+	my $aspect_ratio = get_aspect_ratio($width, $height) if $width && $height;
 
 	return ($width, $height, $file_size, $aspect_ratio);
 }
@@ -162,7 +160,7 @@ sub generate_main_index {
 
 	for my $entry (@entries) {
 		next if $entry eq '.' || $entry eq '..';
-		my $dir_path = File::Spec->catdir($base_dir, $entry);
+		my $dir_path = "$base_dir/$entry";
 		next unless -d $dir_path;
 
 		# Count WebP files in directory
