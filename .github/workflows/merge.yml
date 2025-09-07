@@ -1,16 +1,16 @@
-name: Auto-merge dir0-branch to master
+name: Auto-merge auto to master
 
 on:
   push:
-    branches: ["dir0-branch"]
-    paths: ["dir0/**"]
+    branches: ["auto"]
+    paths: ["couldron/**"]
   workflow_dispatch:
 
 permissions:
   contents: write
 
 concurrency:
-  group: "auto-merge-dir0"
+  group: "auto-merge-couldron"
   cancel-in-progress: true
 
 jobs:
@@ -23,12 +23,6 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Setup branches
-        run: |
-          git checkout master
-          git checkout -b auto origin/auto
-          git checkout master
-
       - name: Configure Git
         run: |
           git config user.name "github-actions[bot]"
@@ -38,11 +32,12 @@ jobs:
         run: |
           # Merge to master
           git checkout master
-          git merge --no-ff --strategy-option=theirs -m "Auto-merge from dir0-branch" dir0-branch
+          git merge --no-ff --strategy-option=theirs -m "Auto-merge from auto" auto
 
-          # Extract and remove tar files in master
-          cd dir0 2>/dev/null || exit 0
-          find . -name '*.tar' -type f -printf 'Processing %f\n' -exec tar -xf '{}' \; -delete
+          # Extract tar files in master and remove tars
+          cd couldron 2>/dev/null || exit 0
+
+          find . -name '*.tar' -type f -printf 'extracting %f\n' -exec tar -xf '{}' \; -delete
           cd ..
 
           # Commit master changes
@@ -52,7 +47,7 @@ jobs:
       - name: Clean work branch
         run: |
           # Clean work branch
-          git checkout dir0-branch
+          git checkout auto
           find . -type f \( -name "*.webp" -o -name "*.tar" \) -delete
           git add -A
           git commit -m "Clean up files" || true
@@ -60,4 +55,4 @@ jobs:
       - name: Push changes
         run: |
           git push origin master
-          git push origin dir0-branch
+          git push origin auto
