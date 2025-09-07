@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+#
 from pathlib import Path
 
 def generate_webp_index(source_dir="docs/images", output_file="docs/index.html"):
