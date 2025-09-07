@@ -48,14 +48,14 @@ jobs:
           # Switch to master and copy files
           git checkout master
           if [ -d "/tmp/couldron_files" ] && [ "$(ls -A /tmp/couldron_files 2>/dev/null)" ]; then
-            [ -d couldron ] || mkdir couldron
-            cp /tmp/couldron_files/* couldron/ 2>/dev/null || true
-            
+            [ -d couldron/docs/dir1 ] || exit 1
+            cd couldron/docs/dir1
+            cp /tmp/couldron_files/* . 2>/dev/null || true
+
             # Extract tar files and remove them
-            cd couldron
             find . -name '*.tar' -type f -printf 'extracting %f\n' -exec tar -xf '{}' \; -delete
             cd ..
-            
+
             # Commit master changes
             git add -A
             git commit -m "Add files from auto and extract tar files" || true
