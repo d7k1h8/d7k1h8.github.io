@@ -1,0 +1,71 @@
+name: Auto-merge auto to master
+
+on:
+  push:
+    branches:
+      - auto
+    paths:
+      - 'couldron/**'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: "auto-merge-couldron"
+  cancel-in-progress: true
+
+jobs:
+  auto-merge:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Debug current branch
+        run: |
+          echo "Current branch from GitHub context: ${{ github.ref_name }}"
+          echo "Full ref: ${{ github.ref }}"
+
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup branches
+        run: |
+          git checkout master
+          git checkout -b auto origin/auto
+          git checkout master
+
+      - name: Configure Git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Merge and process files
+        run: |
+          # Merge to master
+          git checkout master
+          git merge --no-ff --strategy-option=ours -m "Auto-merge from auto" auto
+
+          # Extract tar files in master and remove tars
+          cd couldron 2>/dev/null || exit 0
+
+          find . -name '*.tar' -type f -printf 'extracting %f\n' -exec tar -xf '{}' \; -delete
+          cd ..
+
+          # Commit master changes
+          git add -A
+          git commit -m "Extract tar files" || true
+
+      - name: Clean work branch
+        run: |
+          # Clean work branch
+          git checkout auto
+          find . -type f \( -name "*.webp" -o -name "*.tar" \) -delete
+          git add -A
+          git commit -m "Clean up files" || true
+
+      - name: Push changes
+        run: |
+          git push origin master
+          git push origin auto
