@@ -2,49 +2,61 @@ name: Auto-merge auto to master
 
 on:
   push:
-    branches:
-      - auto
+    branches: ["auto"]
+    paths: ["couldron/**"]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: "auto-merge-couldron"
+  cancel-in-progress: true
 
 jobs:
   auto-merge:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v4
-      with:
-        fetch-depth: 0  # Fetch full history for merge
-        token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
-    - name: Configure Git
-      run: |
-        git config user.name "github-actions[bot]"
-        git config user.email "github-actions[bot]@users.noreply.github.com"
+      - name: Configure Git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
 
-    - name: Merge auto into master
-      run: |
-        echo "🔀 Merging auto into master..."
+      - name: Merge and process files
+        run: |
+          # Merge to master
+          git checkout master
+          git merge --no-ff --strategy-option=theirs -m "Auto-merge from auto" auto
 
-        # Switch to master branch
-        git checkout master
+          # Extract tar files in master and remove tars
+          cd couldron 2>/dev/null || exit 0
+          for tar in *.tar 2>/dev/null; do
+            [ -f "$tar" ] || continue
+            echo "Processing $tar..."
+            tar -xf "$tar"
+            rm "$tar"
+          done
+          cd ..
 
-        # Merge with strategy favoring auto files
-        git merge --no-ff --strategy-option=theirs -m "Auto-merge: Update couldron from auto" auto
+          # Commit master changes
+          git add -A
+          git commit -m "Extract tar files" || true
 
-        echo "✅ Merge completed"
+      - name: Clean work branch
+        run: |
+          # Clean work branch
+          git checkout auto
+          rm -f couldron/*.tar couldron/*.* 2>/dev/null || true
+          git add -A
+          git commit -m "Clean up files" || true
 
-    - name: Push changes to master
-      run: |
-        echo "📤 Pushing master to remote..."
-        git push origin master
-        echo "✅ Successfully pushed master"
-
-    - name: Show merge result
-      run: |
-        echo "📁 Contents of couldron in master:"
-        ls -la couldron/ 2>/dev/null || echo "  (directory not found)"
-
-        echo "🎉 Auto-merge workflow completed!"
-        echo "   - auto merged into master"
-        echo "   - couldron directory updated in master"
-        echo "   - master pushed to remote"
+      - name: Push changes
+        run: |
+          git push origin master
+          git push origin auto
