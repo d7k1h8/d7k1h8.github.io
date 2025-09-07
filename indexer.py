@@ -19,7 +19,7 @@ def generate_webp_index(source_dir="docs/images", output_file="docs/index.html")
         return False
 
     body = "\n".join(
-        f'\t\t<figure>\n\t\t\t<img src="{source_dir}/{f.name}" alt="{f.stem}">\n\t\t\t<figcaption>{f.name}</figcaption>\n\t\t</figure>'
+        f'\t\t<figure>\n\t\t\t<img src="images/{f.name}" alt="{f.stem}">\n\t\t\t<figcaption>{f.name}</figcaption>\n\t\t</figure>'
         for f in webp_files
     )
 
