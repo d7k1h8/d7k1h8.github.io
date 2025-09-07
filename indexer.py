@@ -11,7 +11,7 @@ def generate_webp_index(source_dir="docs/images", output_file="docs/index.html")
     # Resolve source and output paths relative to script_dir
     source = (script_dir / source_dir).resolve()
     output_file = (script_dir / output_file).resolve()
-    print(source)
+    print(script_dir)
 
     webp_files = sorted(source.glob("*.webp"))
 
