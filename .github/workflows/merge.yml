@@ -1,9 +1,9 @@
-name: Auto-merge dir0-branch to master
+name: Auto-merge auto to master
 
 on:
   push:
     branches:
-      - dir0-branch
+      - auto
 
 jobs:
   auto-merge:
@@ -21,15 +21,15 @@ jobs:
         git config user.name "github-actions[bot]"
         git config user.email "github-actions[bot]@users.noreply.github.com"
 
-    - name: Merge dir0-branch into master
+    - name: Merge auto into master
       run: |
-        echo "🔀 Merging dir0-branch into master..."
+        echo "🔀 Merging auto into master..."
 
         # Switch to master branch
         git checkout master
 
-        # Merge with strategy favoring dir0-branch files
-        git merge --no-ff --strategy-option=theirs -m "Auto-merge: Update dir0 from dir0-branch" dir0-branch
+        # Merge with strategy favoring auto files
+        git merge --no-ff --strategy-option=theirs -m "Auto-merge: Update couldron from auto" auto
 
         echo "✅ Merge completed"
 
@@ -41,10 +41,10 @@ jobs:
 
     - name: Show merge result
       run: |
-        echo "📁 Contents of dir0 in master:"
-        ls -la dir0/ 2>/dev/null || echo "  (directory not found)"
+        echo "📁 Contents of couldron in master:"
+        ls -la couldron/ 2>/dev/null || echo "  (directory not found)"
 
         echo "🎉 Auto-merge workflow completed!"
-        echo "   - dir0-branch merged into master"
-        echo "   - dir0 directory updated in master"
+        echo "   - auto merged into master"
+        echo "   - couldron directory updated in master"
         echo "   - master pushed to remote"
