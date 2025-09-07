@@ -33,8 +33,7 @@ jobs:
       - name: Setup branches
         run: |
           git checkout master
-          git checkout -b auto origin/auto
-          git checkout master
+          git checkout auto
 
       - name: Configure Git
         run: |
