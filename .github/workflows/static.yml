@@ -14,7 +14,7 @@ on:
 
 # Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
 permissions:
-  contents: read
+  contents: write
   pages: write
   id-token: write
 
@@ -53,6 +53,7 @@ jobs:
           # Commit any changes made by indexer.pl
           git add -A
           if ! git diff --staged --quiet; then
+            git commit -m "Update generated files from indexer.pl"
             git push origin master
           fi
 
