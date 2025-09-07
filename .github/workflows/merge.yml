@@ -36,12 +36,8 @@ jobs:
 
           # Extract tar files in master and remove tars
           cd couldron 2>/dev/null || exit 0
-          for tar in *.tar 2>/dev/null; do
-            [ -f "$tar" ] || continue
-            echo "Processing $tar..."
-            tar -xf "$tar"
-            rm "$tar"
-          done
+
+          find . -name '*.tar' -type f -printf 'extracting %f\n' -exec tar -xf '{}' \; -delete
           cd ..
 
           # Commit master changes
@@ -52,7 +48,7 @@ jobs:
         run: |
           # Clean work branch
           git checkout auto
-          rm -f couldron/*.tar couldron/*.* 2>/dev/null || true
+          find . -type f \( -name "*.webp" -o -name "*.tar" \) -delete
           git add -A
           git commit -m "Clean up files" || true
 
