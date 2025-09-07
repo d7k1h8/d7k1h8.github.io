@@ -2,7 +2,7 @@ name: Auto-merge auto to master
 
 on:
   push:
-    branches-ignore: ["main"]
+    branches-ignore: ["master"]
   workflow_dispatch:
 
 permissions:
