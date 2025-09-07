@@ -3,6 +3,7 @@ name: Auto-merge auto to master
 on:
   push:
     branches-ignore: ["master"]
+    paths: ["couldron/**"]
   workflow_dispatch:
 
 permissions:
