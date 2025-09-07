@@ -18,21 +18,21 @@ output_dir = script_dir + "/docs/dir0"
 os.makedirs(output_dir, exist_ok=True)
 
 descriptions = {
-    "CG01000": "Rance, solo, young man, brown hair, short spiky hair, brown eyes, confident smile, half-closed eyes, wearing green tunic, white metal armor, shoulder pauldrons, gauntlets, gold accents, belt with sword sheath, hand on hip, standing pose, three-quarter view, anime style, high detail",
-    "CG02000": "Rance, solo, bust portrait, young man, brown hair, short spiky hair, brown eyes, smirking, subtle smile, wearing green collar with gold trim, white armor collar, anime style, close-up, high detail",
-    "CG02001": "Rance, solo, bust portrait, young man, brown hair, short spiky hair, brown eyes, laughing happily, eyes closed, open mouth, sharp teeth visible, wearing green collar with gold trim, white armor collar, anime style, close-up, high detail",
-    "CG02002": "Rance, solo, bust portrait, young man, brown hair, short spiky hair, brown eyes, angry expression, yelling, wide open mouth, sharp fangs, furrowed brows, wearing green collar with gold trim, white armor collar, anime style, close-up, high detail",
-    "CG02003": "Rance, solo, bust portrait, young man, brown hair, short spiky hair, brown eyes, surprised expression, wide eyes, sweat drop, wavy mouth line, wearing green collar with gold trim, white armor collar, anime style, close-up, high detail",
-    "CG02004": "Rance, solo, bust portrait, young man, brown hair, short spiky hair, brown eyes, sly smile, half-closed eyes, hand touching chin, blushing slightly, wearing green collar with gold trim, white armor collar, anime style, close-up, high detail",
-    "CG02005": "Rance, solo, bust portrait, young man, brown hair, short spiky hair, brown eyes, serious frown, pursed lips, narrowed eyes, wearing green collar with gold trim, white armor collar, anime style, close-up, high detail",
-    "CG02006": "Rance, solo, bust portrait, young man, brown hair, short spiky hair, brown eyes, wearing glasses, sly smile, half-closed eyes, hand touching chin, wearing green collar with gold trim, white armor collar, anime style, close-up, high detail",
-    "CG02010": "Rance, solo, bust portrait, young man, brown hair, short spiky hair, brown eyes, smirking, subtle smile, shirtless, bare chest, muscular build, anime style, close-up, high detail",
-    "CG02011": "Rance, solo, bust portrait, young man, brown hair, short spiky hair, brown eyes, laughing happily, eyes closed, open mouth, sharp teeth visible, shirtless, bare chest, muscular build, anime style, close-up, high detail",
-    "CG02012": "Rance, solo, bust portrait, young man, brown hair, short spiky hair, brown eyes, angry expression, yelling, wide open mouth, sharp fangs, furrowed brows, shirtless, bare chest, muscular build, anime style, close-up, high detail",
-    "CG02013": "Rance, solo, bust portrait, young man, brown hair, short spiky hair, brown eyes, surprised expression, wide eyes, sweat drop, wavy mouth line, shirtless, bare chest, muscular build, anime style, close-up, high detail",
-    "CG02014": "Rance, solo, bust portrait, young man, brown hair, short spiky hair, brown eyes, sly smile, half-closed eyes, hand touching chin, blushing slightly, shirtless, bare chest, muscular build, anime style, close-up, high detail",
-    "CG02015": "Rance, solo, bust portrait, young man, brown hair, short spiky hair, brown eyes, serious frown, pursed lips, narrowed eyes, shirtless, bare chest, muscular build, anime style, close-up, high detail"
-}
+		"CG01000": "Rance, solo, young man, brown hair, short spiky hair, brown eyes, confident smile, half-closed eyes, wearing green tunic, white metal armor, shoulder pauldrons, gauntlets, gold accents, belt with sword sheath, hand on hip, standing pose, three-quarter view, anime style, high detail",
+		"CG02000": "Rance, solo, bust portrait, young man, brown hair, short spiky hair, brown eyes, smirking, subtle smile, wearing green collar with gold trim, white armor collar, anime style, close-up, high detail",
+		"CG02001": "Rance, solo, bust portrait, young man, brown hair, short spiky hair, brown eyes, laughing happily, eyes closed, open mouth, sharp teeth visible, wearing green collar with gold trim, white armor collar, anime style, close-up, high detail",
+		"CG02002": "Rance, solo, bust portrait, young man, brown hair, short spiky hair, brown eyes, angry expression, yelling, wide open mouth, sharp fangs, furrowed brows, wearing green collar with gold trim, white armor collar, anime style, close-up, high detail",
+		"CG02003": "Rance, solo, bust portrait, young man, brown hair, short spiky hair, brown eyes, surprised expression, wide eyes, sweat drop, wavy mouth line, wearing green collar with gold trim, white armor collar, anime style, close-up, high detail",
+		"CG02004": "Rance, solo, bust portrait, young man, brown hair, short spiky hair, brown eyes, sly smile, half-closed eyes, hand touching chin, blushing slightly, wearing green collar with gold trim, white armor collar, anime style, close-up, high detail",
+		"CG02005": "Rance, solo, bust portrait, young man, brown hair, short spiky hair, brown eyes, serious frown, pursed lips, narrowed eyes, wearing green collar with gold trim, white armor collar, anime style, close-up, high detail",
+		"CG02006": "Rance, solo, bust portrait, young man, brown hair, short spiky hair, brown eyes, wearing glasses, sly smile, half-closed eyes, hand touching chin, wearing green collar with gold trim, white armor collar, anime style, close-up, high detail",
+		"CG02010": "Rance, solo, bust portrait, young man, brown hair, short spiky hair, brown eyes, smirking, subtle smile, shirtless, bare chest, muscular build, anime style, close-up, high detail",
+		"CG02011": "Rance, solo, bust portrait, young man, brown hair, short spiky hair, brown eyes, laughing happily, eyes closed, open mouth, sharp teeth visible, shirtless, bare chest, muscular build, anime style, close-up, high detail",
+		"CG02012": "Rance, solo, bust portrait, young man, brown hair, short spiky hair, brown eyes, angry expression, yelling, wide open mouth, sharp fangs, furrowed brows, shirtless, bare chest, muscular build, anime style, close-up, high detail",
+		"CG02013": "Rance, solo, bust portrait, young man, brown hair, short spiky hair, brown eyes, surprised expression, wide eyes, sweat drop, wavy mouth line, shirtless, bare chest, muscular build, anime style, close-up, high detail",
+		"CG02014": "Rance, solo, bust portrait, young man, brown hair, short spiky hair, brown eyes, sly smile, half-closed eyes, hand touching chin, blushing slightly, shirtless, bare chest, muscular build, anime style, close-up, high detail",
+		"CG02015": "Rance, solo, bust portrait, young man, brown hair, short spiky hair, brown eyes, serious frown, pursed lips, narrowed eyes, shirtless, bare chest, muscular build, anime style, close-up, high detail"
+		}
 
 """
 Claude
@@ -55,8 +55,8 @@ descriptions = {
 """
 
 for img_name, desc in descriptions.items():
-    txt_file = os.path.join(output_dir, f"{img_name}.txt")
+	txt_file = os.path.join(output_dir, f"{img_name}.txt")
     with open(txt_file, "w", encoding="utf-8") as f:
-        f.write(desc)
+	    f.write(desc)
 
 print("All descriptions saved in", output_dir, "as .txt files.")
