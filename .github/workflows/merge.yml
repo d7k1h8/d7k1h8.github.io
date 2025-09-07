@@ -3,6 +3,7 @@ name: Auto-merge auto to master
 on:
   push:
     branches:
+      - master
       - auto
     paths:
       - 'couldron/**'
