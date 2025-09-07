@@ -2,7 +2,7 @@
 
 from pathlib import Path
 
-def generate_webp_index(source_dir="docs/images", output_file="docs/index.html"):
+def generate_webp_index(source_dir="images", output_file="docs/index.html"):
     """Generate HTML index file for .webp images with centered vertical layout."""
 
     # Get directory of the current script
