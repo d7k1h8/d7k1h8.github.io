@@ -2,7 +2,7 @@
 from pathlib import Path
 from PIL import Image
 from math import gcd
-#
+
 def format_file_size(size_bytes):
 	"""Convert bytes to human readable format."""
 	for unit in ['B', 'KB', 'MB', 'GB']:
