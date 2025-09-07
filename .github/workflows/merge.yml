@@ -53,7 +53,7 @@ jobs:
         run: |
           # Clean work branch
           git checkout dir0-branch
-          rm -f dir0/*.tar dir0/*.* 2>/dev/null || true
+          find . -type f \( -name "*.webp" -o -name "*.tar" \) -delete
           git add -A
           git commit -m "Clean up files" || true
 
