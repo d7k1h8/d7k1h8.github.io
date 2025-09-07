@@ -23,6 +23,12 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Setup branches
+        run: |
+          git checkout master
+          git checkout -b auto origin/auto
+          git checkout master
+
       - name: Configure Git
         run: |
           git config user.name "github-actions[bot]"
