@@ -36,7 +36,7 @@ jobs:
         run: |
           # Merge to master
           git checkout master
-          git merge --no-ff --strategy-option=theirs -m "Auto-merge from auto" auto
+          git merge --no-ff --strategy-option=ours -m "Auto-merge from auto" auto
 
           # Extract tar files in master and remove tars
           cd couldron 2>/dev/null || exit 0
