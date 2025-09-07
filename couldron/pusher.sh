@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# dir0-workflow.sh - Automate dir0-branch workflow
+#  dir0-workflow.sh - Automate dir0-branch workflow
 #  Usage: ./dir0-workflow.sh [commit-message]
 
 set -e  # Exit on any error
