@@ -1,7 +1,7 @@
 #!/bin/sh -eu
 
 # dir0-workflow.sh - Automate dir0-branch workflow
-# Usage: ./dir0-workflow.sh [commit-message]
+#  Usage: ./dir0-workflow.sh [commit-message]
 
 # Configuration
 WORK_BRANCH="auto"
