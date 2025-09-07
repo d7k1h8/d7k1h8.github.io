@@ -4,8 +4,6 @@ on:
   push:
     branches:
       - auto
-    paths:
-      - 'couldron/**'
   workflow_dispatch:
 
 permissions:
