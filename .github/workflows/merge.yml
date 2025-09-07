@@ -18,6 +18,12 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Debug current branch
+        run: |
+          echo "Current branch from GitHub context: ${{ github.ref_name }}"
+          echo "Full ref: ${{ github.ref }}"
+          echo "Expected: auto"
+
       - name: Checkout
         uses: actions/checkout@v4
         with:
