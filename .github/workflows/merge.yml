@@ -55,7 +55,8 @@ jobs:
           git checkout master
           changes_made=false
           if [ -d "/tmp/couldron_files" ] && [ "$(ls -A /tmp/couldron_files 2>/dev/null)" ]; then
-            cd ./docs/dir1 || exit 1
+            cd ./docs/dir2 || mkdir ./docs/dir2
+            mv * ../dir1
             cp /tmp/couldron_files/* . 2>/dev/null || true
 
             # Extract tar files and remove them
