@@ -49,6 +49,7 @@ jobs:
             # Copy files to temporary location
             mkdir -p /tmp/couldron_files
             find couldron -type f \( -name '*.tar' -o -name '*.webp' \) -exec cp '{}' /tmp/couldron_files/ \; 2>/dev/null || true
+            rmdir /tmp/couldron_files || exit 1
           fi
 
           # Switch to master and copy files
