@@ -170,8 +170,8 @@ sub generate_dir_page {
 	# 	(stat("$dir_path/$b"))[9] <=> (stat("$dir_path/$a"))[9]
 	# } @webp_files;
 
-	# # Sort alphabetically
-	# @webp_files = sort @webp_files;
+	# Sort alphabetically
+	@webp_files = sort @webp_files;
 
 	my @figures;
 	my $total = scalar @webp_files;
