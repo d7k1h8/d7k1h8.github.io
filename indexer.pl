@@ -167,7 +167,7 @@ sub generate_dir_page {
 
 	# Sort by modification time (newest first)
 	@webp_files = sort {
-		(stat("$dir_path/$b"))[9] <=> (stat("$dir_path/$a"))[9]
+		(stat("$dir_path/$b"))[10] <=> (stat("$dir_path/$a"))[10]
 	} @webp_files;
 
 	my @figures;
