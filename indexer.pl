@@ -182,7 +182,7 @@ sub generate_dir_page {
 		push @info, format_file_size($file_size);
 
 		my $index = sprintf "[%d/%d]", $i + 1, $total;  # numbering
-		my $caption = "$file<br><small>" . join(' • ', @info) . "</small>";
+		my $caption = "$file $index<br><small>" . join(' • ', @info) . "</small>";
 		push @figures, qq(<figure><img src="$dir_name/$file"><figcaption>$caption</figcaption></figure>);
 	}
 
