@@ -48,15 +48,16 @@ jobs:
           [ -d "couldron" ]
           # Copy files to temporary location
           mkdir -p /tmp/couldron_files
-          find couldron -type f \( -name '*.tar' -o -name '*.webp' \) -exec cp '{}' /tmp/couldron_files/ \; 2>/dev/null || true
+          find couldron -type f \( -name '*.tar' -o -name '*.webp' \) -exec cp '{}' /tmp/couldron_files/ \;
           rmdir /tmp/couldron_files && exit 1
 
           # Switch to master and copy files
           git checkout master
           changes_made=false
           cd ./docs/img2
-          mv * ../img1
-          cp /tmp/couldron_files/* . 2>/dev/null || true
+          find . -type f \( -name '*.tar' -o -name '*.webp' \) -exec cp '{}' /tmp/couldron_files/ \;
+          find . -type f ! -name "*$(date -d '+1 hour' +'%Y%m%d')*" -exec mv '{}' ../img1 \;
+          cp /tmp/couldron_files/* . 2>/dev/null
 
           # Extract tar files and remove them
           find . -name '*.tar' -type f -printf 'extracting %f\n' -exec tar -xf '{}' \; -delete
