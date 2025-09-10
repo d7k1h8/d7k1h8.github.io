@@ -166,9 +166,12 @@ sub generate_dir_page {
 	return unless @webp_files;
 
 	# Sort by modification time (newest first)
-	@webp_files = sort {
-		(stat("$dir_path/$b"))[9] <=> (stat("$dir_path/$a"))[9]
-	} @webp_files;
+	# @webp_files = sort {
+	# 	(stat("$dir_path/$b"))[9] <=> (stat("$dir_path/$a"))[9]
+	# } @webp_files;
+
+	# # Sort alphabetically
+	# @webp_files = sort @webp_files;
 
 	my @figures;
 	my $total = scalar @webp_files;
@@ -182,7 +185,7 @@ sub generate_dir_page {
 		push @info, format_file_size($file_size);
 
 		my $index = sprintf "[%d/%d]", $i + 1, $total;  # numbering
-		my $caption = "$file  $index<br><small>" . join(' • ', @info) . "</small>";
+		my $caption = "$file $index<br><small>" . join(' • ', @info) . "</small>";
 		push @figures, qq(<figure><img src="$dir_name/$file"><figcaption>$caption</figcaption></figure>);
 	}
 
