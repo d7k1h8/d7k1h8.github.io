@@ -171,7 +171,8 @@ sub generate_dir_page {
 	} @webp_files;
 
 	my @figures;
-	for my $file (@webp_files) {
+	my $total = scalar @webp_files;
+	for my $i (0 .. $#webp_files) {
 		my ($width, $height, $file_size, $aspect_ratio) = get_image_info("$dir_path/$file");
 
 		my @info;
@@ -179,6 +180,7 @@ sub generate_dir_page {
 		push @info, $aspect_ratio if $aspect_ratio;
 		push @info, format_file_size($file_size);
 
+		my $index = sprintf "[%d/%d]", $i + 1, $total;   # ✅ numbering
 		my $caption = "$file<br><small>" . join(' • ', @info) . "</small>";
 		push @figures, qq(<figure><img src="$dir_name/$file"><figcaption>$caption</figcaption></figure>);
 	}
