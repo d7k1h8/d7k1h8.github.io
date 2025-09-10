@@ -4,7 +4,7 @@ on:
     branches:
       - auto
     paths:
-      - 'trigger_dir/placeholder'
+      - 'trigger_dir/deploy'
   workflow_dispatch:
 
 # Combined permissions for both auto-merge and Pages deployment
