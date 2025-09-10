@@ -173,6 +173,7 @@ sub generate_dir_page {
 	my @figures;
 	my $total = scalar @webp_files;
 	for my $i (0 .. $#webp_files) {
+		my $file = $webp_files[$i];
 		my ($width, $height, $file_size, $aspect_ratio) = get_image_info("$dir_path/$file");
 
 		my @info;
