@@ -26,7 +26,6 @@ jobs:
     steps:
       - name: Debug current branch
         run: |
-          date
           echo "Current branch from GitHub context: ${{ github.ref_name }}"
           echo "Full ref: ${{ github.ref }}"
 
