@@ -195,8 +195,19 @@ sub generate_dir_page {
 	printf "Generated %s.html with %d images\n", $dir_name, scalar @webp_files;
 }
 
+sub clean_html_files {
+	my $base_dir = shift;
+	for my $file (glob("$base_dir/*.html")) {
+		unlink $file or warn "Could not delete $file: $!";
+	}
+}
+
 sub main {
 	my $base_dir = "docs";
+
+	# Delete old HTML files first (using glob)
+	clean_html_files($base_dir);
+
 	generate_main_index($base_dir);
 
 	# Process each directory that has WebP files
