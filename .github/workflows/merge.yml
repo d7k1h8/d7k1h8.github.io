@@ -4,7 +4,7 @@ on:
     branches:
       - auto
     paths:
-      - 'couldron/**'
+      - 'trigger_dir/placeholder'
   workflow_dispatch:
 
 # Combined permissions for both auto-merge and Pages deployment
