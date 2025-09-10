@@ -45,34 +45,31 @@ jobs:
         run: |
           # Copy tar and webp files from auto branch to master
           git checkout auto
-          if [ -d "couldron" ]; then
-            # Copy files to temporary location
-            mkdir -p /tmp/couldron_files
-            find couldron -type f \( -name '*.tar' -o -name '*.webp' \) -exec cp '{}' /tmp/couldron_files/ \; 2>/dev/null || true
-            rmdir /tmp/couldron_files && exit 1
-          fi
+          [ -d "couldron" ]
+          # Copy files to temporary location
+          mkdir -p /tmp/couldron_files
+          find couldron -type f \( -name '*.tar' -o -name '*.webp' \) -exec cp '{}' /tmp/couldron_files/ \; 2>/dev/null || true
+          rmdir /tmp/couldron_files && exit 1
 
           # Switch to master and copy files
           git checkout master
           changes_made=false
-          if [ -d "/tmp/couldron_files" ] && [ "$(ls -A /tmp/couldron_files 2>/dev/null)" ]; then
-            cd ./docs/img2
-            mv * ../img1
-            cp /tmp/couldron_files/* . 2>/dev/null || true
+          cd ./docs/img2
+          mv * ../img1
+          cp /tmp/couldron_files/* . 2>/dev/null || true
 
-            # Extract tar files and remove them
-            find . -name '*.tar' -type f -printf 'extracting %f\n' -exec tar -xf '{}' \; -delete
-            cd ../..
-            ./indexer.pl
+          # Extract tar files and remove them
+          find . -name '*.tar' -type f -printf 'extracting %f\n' -exec tar -xf '{}' \; -delete
+          cd ../..
+          ./indexer.pl
 
-            # Commit master changes
-            git add -A
-            if git diff --staged --quiet; then
-              echo "No changes to commit"
-            else
-              git commit -m "Add files from auto and extract tar files"
-              changes_made=true
-            fi
+          # Commit master changes
+          git add -A
+          if git diff --staged --quiet; then
+            echo "No changes to commit"
+          else
+            git commit -m "Add files from auto and extract tar files"
+            changes_made=true
           fi
 
           # Set output for next steps
