@@ -1,0 +1,48 @@
+# Extract and process TAR files in root directory
+name: Extract TAR Files
+on:
+  # Runs on pushes targeting the default branch
+  push:
+    branches:
+      - temp
+    paths:
+      - '*.tar'
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+# Sets permissions to allow commits and pushes
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+# Allow only one concurrent run
+concurrency:
+  group: "extract-tar"
+  cancel-in-progress: true
+
+jobs:
+  extract-tar:
+    runs-on: ubuntu-latest
+    steps: # Order matters
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          lfs: true   # This is crucial - enables Git LFS checkout
+          fetch-depth: 1  # Full history needed for commits
+
+      # Configure Git for commits
+      - name: Do everything
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          [[ -d images/ ]] || mkdir images
+          cd images
+          find .. -name '*.tar' -type f -printf 'extracting %f\n' -exec tar -xf '{}' \; -delete
+
+          git add -A
+          if ! git diff --staged --quiet; then
+            git commit -m "Extract TAR files to images/ directory and remove originals"
+            git push origin temp
+          fi
