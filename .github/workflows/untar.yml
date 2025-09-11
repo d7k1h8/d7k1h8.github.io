@@ -21,13 +21,14 @@ concurrency:
 
 jobs:
   extract-tar:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     steps:
       - name: Checkout
         uses: actions/checkout@v4
         with:
           fetch-depth: 1  # Full history needed for commits
           token: ${{ secrets.GITHUB_TOKEN }}
+          lfs: true  # Enable LFS checkout
 
       # Configure Git for commits
       - name: Do everything
