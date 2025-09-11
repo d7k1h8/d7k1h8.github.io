@@ -1,21 +1,48 @@
-#!/bin/sh -eu
+#!/usr/bin/sh -ux
 
-# NOTE: The script will fail if duplicate files, which means the new file
-# won't overwrite the old file. I could make it the opposite, but it's fine.
+parent_dir=$PWD
 
-# The script is as barebone as it gets, can't be simplified further
+dir1="auto_branch_1"
+dir2="auto_branch_2"
+[ -d "$dir1" ] && rm -rf "$dir1"
+[ -d "$dir2" ] && rm -rf "$dir2"
+git clone --branch auto --depth=1 \
+	'https://github.com/d7k1h8/d7k1h8.github.io.git' "$dir1"
+git clone --branch auto --depth=1 \
+	'https://github.com/d7k1h8/d7k1h8.github.io.git' "$dir2"
 
-target_file="$1"
-pat="$2"
-target_basename="${target_file##*/}"
+# | awk '$1="",!seen[$1]++'
+upload_file() {
+	cd "$parent_dir"
+	cd "$1/couldron"
+	file="${2##*/}"
 
-# Create new tree with just that file added to temp's existing files
-NEW_TREE="$(git mktree <<EOF
-$(git ls-tree --full-tree temp)
-100644 blob $(git hash-object -w ./$target_file)	${target_basename}
-EOF
-)"
-# Create commit and update branch
-git update-ref refs/heads/temp $(git commit-tree $NEW_TREE -p temp \
-	-m "Add $target_basename from auto branch")
-git push "https://$pat@github.com/d7k1h8/d7k1h8.github.io.git" temp
+	# --depth=1 is bad if multiple simultaneous pushes happened
+	# git will groan about conflicts
+	# git fetch --depth=1 origin temp:temp
+	git fetch origin temp:temp
+
+	# Create new tree with just that file added to temp's existing files
+	# printf -v files_tree '%s\n100644 blob %s\t%s\n' \
+	# 	"$(git ls-tree --full-tree temp)" \
+	# 	"$(git hash-object -w "$file")" "$file"
+	files_tree="$({
+		git ls-tree --full-tree temp
+		printf "100644 blob %s\t%s\n" \
+			"$(git hash-object -w "$file")" \
+			"$file"
+	})"
+
+	awk '{sub(/[^\t]+\t/, ""); if (seen[$0]++) exit 1}' <<< "$files_tree" || return
+
+	git update-ref refs/heads/temp "$(git commit-tree \
+		"$(git mktree <<< "$files_tree")" \
+		-p temp \
+		-m "Add $file from auto branch")"
+	git push "https://$PAT@github.com/d7k1h8/d7k1h8.github.io.git" temp
+}
+
+upload_file "$dir1" test1
+upload_file "$dir1" kommit.sh
+upload_file "$dir2" test2
+upload_file "$dir2" README.md
