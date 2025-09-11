@@ -30,64 +30,17 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
 
       # Configure Git for commits
-      - name: Configure Git
+      - name: Do everything
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
-      # Check if any .tar files exist in root directory
-      - name: Check for TAR files
-        id: check_tar
-        run: |
-          if ls *.tar 1> /dev/null 2>&1; then
-            echo "tar_found=true" >> $GITHUB_OUTPUT
-            echo "Found TAR files in root directory"
-            ls -la *.tar
-          else
-            echo "tar_found=false" >> $GITHUB_OUTPUT
-            echo "No TAR files found in root directory"
-          fi
+          [[ -d images/ ]] || mkdir images
+          cd images
+          find .. -name '*.tar' -type f -printf 'extracting %f\n' -exec tar -xf '{}' \; -delete
 
-      # Create image directory if it doesn't exist
-      - name: Create image directory
-        if: steps.check_tar.outputs.tar_found == 'true'
-        run: |
-          mkdir -p image/
-          echo "Created image/ directory"
-
-      # Extract all .tar files to /image/ directory
-      - name: Extract TAR files
-        if: steps.check_tar.outputs.tar_found == 'true'
-        run: |
-          for tar_file in *.tar; do
-            if [ -f "$tar_file" ]; then
-              echo "Extracting $tar_file to image/ directory..."
-              tar -xf "$tar_file" -C image/
-              echo "Successfully extracted $tar_file"
-            fi
-          done
-
-      # Delete original .tar files
-      - name: Delete original TAR files
-        if: steps.check_tar.outputs.tar_found == 'true'
-        run: |
-          for tar_file in *.tar; do
-            if [ -f "$tar_file" ]; then
-              echo "Deleting $tar_file..."
-              rm "$tar_file"
-            fi
-          done
-          echo "All TAR files deleted"
-
-      # Commit and push changes
-      - name: Commit and push changes
-        if: steps.check_tar.outputs.tar_found == 'true'
-        run: |
           git add -A
           if ! git diff --staged --quiet; then
-            git commit -m "Extract TAR files to image/ directory and remove originals"
-            git push origin ${{ github.ref_name }}
-            echo "Changes committed and pushed successfully"
-          else
-            echo "No changes to commit"
+            git commit -m "Extract TAR files to images/ directory and remove originals"
+            git push origin temp
           fi
