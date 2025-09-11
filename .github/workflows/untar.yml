@@ -26,7 +26,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0  # Full history needed for commits
+          fetch-depth: 1  # Full history needed for commits
           token: ${{ secrets.GITHUB_TOKEN }}
 
       # Configure Git for commits
