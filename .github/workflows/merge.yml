@@ -46,7 +46,7 @@ jobs:
         id: merge
         run: |
           # Copy tar and webp files from auto branch to master
-          git checkout auto
+          # git checkout auto # already on auto
           [ -d "couldron" ]
           # Copy files to temporary location
           mkdir -p /tmp/couldron_files
