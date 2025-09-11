@@ -1,5 +1,6 @@
 #!/bin/sh
 
+#
 git pull origin auto
 cd couldron
 git add *.tar *.webp
