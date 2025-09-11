@@ -6,7 +6,7 @@ on:
       - auto
     paths:
       # - 'couldron/**' # follows subdirectories
-      - 'couldron/'
+      - 'couldron/*.tar'
   workflow_dispatch:
 
 # Combined permissions for both auto-merge and Pages deployment
