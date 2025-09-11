@@ -4,8 +4,7 @@ on:
   # Runs on pushes targeting the default branch
   push:
     branches:
-      - main
-      - master
+      - temp
     paths:
       - '*.tar'
   # Allows you to run this workflow manually from the Actions tab
