@@ -30,12 +30,13 @@ jobs:
           git config user.email "github-actions[bot]@users.noreply.github.com"
           if [ -d images ]; then
             cd images
-            if ls *.webp >/dev/null 2>&1; then
+            # Check if any .webp files exist and are tracked by git
+            if git ls-files "*.webp" | grep -q .; then
               git rm *.webp
               git commit -m "Removed old images"
               git push origin temp
             else
-              echo "No .webp files found to remove"
+              echo "No tracked .webp files found to remove"
             fi
           else
             echo "Images directory does not exist"
