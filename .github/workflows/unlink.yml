@@ -1,0 +1,42 @@
+name: Remove old images
+on:
+  # Runs every 2 hours, all day
+  schedule:
+    - cron: '0 */2 * * *'  # At minute 0 past every 2nd hour
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+# Sets permissions to allow commits and pushes
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+# Allow only one concurrent run
+concurrency:
+  group: "remove-images"
+  cancel-in-progress: true
+jobs:
+  remove-images:
+    runs-on: ubuntu-latest
+    steps: # Order matters
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          lfs: true   # This is crucial - enables Git LFS checkout
+          fetch-depth: 1  # Full history needed for commits
+      # Configure Git for commits
+      - name: Remove old images
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          if [ -d images ]; then
+            cd images
+            if ls *.webp >/dev/null 2>&1; then
+              git rm *.webp
+              git commit -m "Removed old images"
+              git push origin temp
+            else
+              echo "No .webp files found to remove"
+            fi
+          else
+            echo "Images directory does not exist"
+          fi
