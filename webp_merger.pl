@@ -38,7 +38,7 @@ push @cmd, (
 	'-background', 'black',
 	'-fill', 'white',
 	'-font', '/usr/share/fonts/TTF/DejaVuSans.ttf',
-	'-pointsize', '80',
+	'-pointsize', '20',
 	'output_grid.webp'
 );
 
