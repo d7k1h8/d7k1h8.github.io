@@ -35,8 +35,9 @@ foreach my $file (@files) {
 push @cmd, (
 	'-tile', "${cols}x",
 	'-geometry', '832x1216+10+10',
-	'-background', 'white',
-	'-font', 'DejaVu Sans',
+	'-background', 'black',
+	'-fill', 'white',
+	'-font', 'DejaVuSans',
 	'-pointsize', '20',
 	'output_grid.webp'
 );
