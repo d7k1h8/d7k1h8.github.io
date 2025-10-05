@@ -34,7 +34,7 @@ foreach my $file (@files) {
 # Montage options
 push @cmd, (
 	'-tile', "${cols}x",
-	'-geometry', '832x1216+10+10',
+	'-geometry', '832x1216+0+0',
 	'-background', 'black',
 	'-fill', 'white',
 	'-font', '/usr/share/fonts/TTF/DejaVuSans.ttf',
