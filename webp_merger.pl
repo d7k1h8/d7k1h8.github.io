@@ -33,7 +33,6 @@ foreach my $file (@files) {
 
 # Montage options
 push @cmd, (
-	'-limit', 'thread', '4',
 	'-tile', "${cols}x",
 	'-geometry', '832x1216+10+10',
 	'-background', 'white',
