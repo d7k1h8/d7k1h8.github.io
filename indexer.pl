@@ -2,7 +2,7 @@
 use strict;
 use warnings;
 
-# Alles gut
+# alles gut
 
 sub format_file_size {
 	my $size = shift;
