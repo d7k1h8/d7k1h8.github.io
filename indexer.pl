@@ -173,7 +173,9 @@ sub generate_dir_page {
 	# } @webp_files;
 
 	# Sort alphabetically
-	@webp_files = sort @webp_files;
+	# @webp_files = sort @webp_files;
+	# Sort reverse alphabetically
+	@webp_files = sort { $b cmp $a } @webp_files;
 
 	my @figures;
 	my $total = scalar @webp_files;
