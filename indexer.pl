@@ -100,10 +100,24 @@ sub create_html {
 	a { text-decoration: none; font-size: 1.1em; }
 	a:hover { text-decoration: underline; }
 	figure { margin: 20px 0; }
+	figure.hidden { display: none; }
 	figcaption { margin-top: 5px; font-size: 0.9em; }
 	figcaption small { color: #666; font-size: 0.8em; }
 	img { max-width: 90%; height: auto; }
 	.back-link { margin: 20px 0; }
+	.filter-box { margin: 20px auto; max-width: 400px; }
+	.filter-box input {
+		padding: 10px;
+		font-size: 1em;
+		width: 100%;
+		box-sizing: border-box;
+		border: 2px solid #ccc;
+		border-radius: 4px;
+	}
+	.filter-box input:focus {
+		outline: none;
+		border-color: #4CAF50;
+	}
 	</style>
 </head>
 <body>
@@ -193,8 +207,24 @@ sub generate_dir_page {
 		push @figures, qq(<figure><img src="$dir_name/$file"><figcaption>$caption</figcaption></figure>);
 	}
 
+	my $filter_box = '<div class="filter-box"><input type="text" id="filter" placeholder="Filter images (e.g., CG020)"></div>';
+	my $script = <<'SCRIPT';
+<script>
+const filter = document.getElementById('filter');
+const figures = document.querySelectorAll('figure');
+
+filter.addEventListener('input', e => {
+	const val = e.target.value.toLowerCase();
+	figures.forEach(fig => {
+		const src = fig.querySelector('img').src;
+		fig.classList.toggle('hidden', val && !src.toLowerCase().includes(val));
+	});
+});
+</script>
+SCRIPT
+
 	my $html = create_html("WebP Images - $dir_name",
-		"<h1>$dir_name</h1>\n\t" . join("\n\t", @figures), 1);
+		"<h1>$dir_name</h1>\n\t$filter_box\n\t" . join("\n\t", @figures) . "\n\n\t$script", 1);
 
 	my ($parent_dir) = ($dir_path =~ m|^(.*)/[^/]+/?$|);  # dirname equivalent
 	my $output_file = "$parent_dir/$dir_name.html";
