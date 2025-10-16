@@ -1,3 +1,4 @@
+
 #!/usr/bin/env perl
 use strict;
 use warnings;
@@ -118,19 +119,6 @@ sub create_html {
 		outline: none;
 		border-color: #4CAF50;
 	}
-	.top-btn {
-		position: fixed;
-		bottom: 20px;
-		right: 20px;
-		padding: 12px 16px;
-		background: #333;
-		color: #fff;
-		border: none;
-		border-radius: 4px;
-		cursor: pointer;
-		font-size: 1.2em;
-	}
-	.top-btn:hover { background: #555; }
 	</style>
 </head>
 <body>
@@ -217,11 +205,10 @@ sub generate_dir_page {
 
 		my $index = sprintf "[%d/%d]", $i + 1, $total;  # numbering
 		my $caption = "$file $index<br><small>" . join(' • ', @info) . "</small>";
-		push @figures, qq(<figure><img src="$dir_name/$file"><figcaption>$caption</figcaption></figure>);
+		push @figures, qq(<figure><img src="$dir_name/$file" loading="lazy"><figcaption>$caption</figcaption></figure>);
 	}
 
 	my $filter_box = '<div class="filter-box"><input type="text" id="filter" placeholder="Filter images (e.g., CG020)"></div>';
-	my $top_btn = '<button class="top-btn" onclick="scrollTo(0,0)">↑</button>';
 	my $script = <<'SCRIPT';
 <script>
 const filter = document.getElementById('filter');
@@ -238,7 +225,7 @@ filter.addEventListener('input', e => {
 SCRIPT
 
 	my $html = create_html("WebP Images - $dir_name",
-		"<h1>$dir_name</h1>\n\t$filter_box\n\t" . join("\n\t", @figures) . "\n\n\t$top_btn\n\n\t$script", 1);
+		"<h1>$dir_name</h1>\n\t$filter_box\n\t" . join("\n\t", @figures) . "\n\n\t$script", 1);
 
 	my ($parent_dir) = ($dir_path =~ m|^(.*)/[^/]+/?$|);  # dirname equivalent
 	my $output_file = "$parent_dir/$dir_name.html";
