@@ -204,7 +204,7 @@ sub generate_dir_page {
 
 		my $index = sprintf "[%d/%d]", $i + 1, $total;  # numbering
 		my $caption = "$file $index<br><small>" . join(' • ', @info) . "</small>";
-		push @figures, qq(<figure><img src="$dir_name/$file"><figcaption>$caption</figcaption></figure>);
+		push @figures, qq(<figure><img src="$dir_name/$file" loading="lazy"><figcaption>$caption</figcaption></figure>);
 	}
 
 	my $filter_box = '<div class="filter-box"><input type="text" id="filter" placeholder="Filter images (e.g., CG020)"></div>';
