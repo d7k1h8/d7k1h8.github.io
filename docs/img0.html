@@ -10,15 +10,30 @@
 	a { text-decoration: none; font-size: 1.1em; }
 	a:hover { text-decoration: underline; }
 	figure { margin: 20px 0; }
+	figure.hidden { display: none; }
 	figcaption { margin-top: 5px; font-size: 0.9em; }
 	figcaption small { color: #666; font-size: 0.8em; }
 	img { max-width: 90%; height: auto; }
 	.back-link { margin: 20px 0; }
+	.filter-box { margin: 20px auto; max-width: 400px; }
+	.filter-box input {
+		padding: 10px;
+		font-size: 1em;
+		width: 100%;
+		box-sizing: border-box;
+		border: 2px solid #ccc;
+		border-radius: 4px;
+	}
+	.filter-box input:focus {
+		outline: none;
+		border-color: #4CAF50;
+	}
 	</style>
 </head>
 <body>
 	<div class="back-link"><a href="index.html">← Back to directories</a></div>
 	<h1>img0</h1>
+	<div class="filter-box"><input type="text" id="filter" placeholder="Filter images (e.g., CG020)"></div>
 	<figure><img src="img0/CG02015.webp"><figcaption>CG02015.webp [1/14]<br><small>130 B</small></figcaption></figure>
 	<figure><img src="img0/CG02014.webp"><figcaption>CG02014.webp [2/14]<br><small>130 B</small></figcaption></figure>
 	<figure><img src="img0/CG02013.webp"><figcaption>CG02013.webp [3/14]<br><small>130 B</small></figcaption></figure>
@@ -33,5 +48,19 @@
 	<figure><img src="img0/CG02001.webp"><figcaption>CG02001.webp [12/14]<br><small>130 B</small></figcaption></figure>
 	<figure><img src="img0/CG02000.webp"><figcaption>CG02000.webp [13/14]<br><small>130 B</small></figcaption></figure>
 	<figure><img src="img0/CG01000.webp"><figcaption>CG01000.webp [14/14]<br><small>130 B</small></figcaption></figure>
+
+	<script>
+const filter = document.getElementById('filter');
+const figures = document.querySelectorAll('figure');
+
+filter.addEventListener('input', e => {
+	const val = e.target.value.toLowerCase();
+	figures.forEach(fig => {
+		const src = fig.querySelector('img').src;
+		fig.classList.toggle('hidden', val && !src.toLowerCase().includes(val));
+	});
+});
+</script>
+
 </body>
 </html>

@@ -10,15 +10,30 @@
 	a { text-decoration: none; font-size: 1.1em; }
 	a:hover { text-decoration: underline; }
 	figure { margin: 20px 0; }
+	figure.hidden { display: none; }
 	figcaption { margin-top: 5px; font-size: 0.9em; }
 	figcaption small { color: #666; font-size: 0.8em; }
 	img { max-width: 90%; height: auto; }
 	.back-link { margin: 20px 0; }
+	.filter-box { margin: 20px auto; max-width: 400px; }
+	.filter-box input {
+		padding: 10px;
+		font-size: 1em;
+		width: 100%;
+		box-sizing: border-box;
+		border: 2px solid #ccc;
+		border-radius: 4px;
+	}
+	.filter-box input:focus {
+		outline: none;
+		border-color: #4CAF50;
+	}
 	</style>
 </head>
 <body>
 	<div class="back-link"><a href="index.html">← Back to directories</a></div>
 	<h1>img1</h1>
+	<div class="filter-box"><input type="text" id="filter" placeholder="Filter images (e.g., CG020)"></div>
 	<figure><img src="img1/wood.webp"><figcaption>wood.webp [1/2491]<br><small>1024×1024 • 1:1 • 77.5 KB</small></figcaption></figure>
 	<figure><img src="img1/wichita.webp"><figcaption>wichita.webp [2/2491]<br><small>130 B</small></figcaption></figure>
 	<figure><img src="img1/sword_on_guard.webp"><figcaption>sword_on_guard.webp [3/2491]<br><small>512×512 • 1:1 • 6.8 KB</small></figcaption></figure>
@@ -2510,5 +2525,19 @@
 	<figure><img src="img1/20251013_080256_makima-bow_bhp.webp"><figcaption>20251013_080256_makima-bow_bhp.webp [2489/2491]<br><small>1024×1024 • 1:1 • 94.9 KB</small></figcaption></figure>
 	<figure><img src="img1/20251013_080252_yoru-blade_galaxist.webp"><figcaption>20251013_080252_yoru-blade_galaxist.webp [2490/2491]<br><small>1024×1024 • 1:1 • 47.6 KB</small></figcaption></figure>
 	<figure><img src="img1/20251013_080252_makima-blade_galaxist.webp"><figcaption>20251013_080252_makima-blade_galaxist.webp [2491/2491]<br><small>1024×1024 • 1:1 • 108.0 KB</small></figcaption></figure>
+
+	<script>
+const filter = document.getElementById('filter');
+const figures = document.querySelectorAll('figure');
+
+filter.addEventListener('input', e => {
+	const val = e.target.value.toLowerCase();
+	figures.forEach(fig => {
+		const src = fig.querySelector('img').src;
+		fig.classList.toggle('hidden', val && !src.toLowerCase().includes(val));
+	});
+});
+</script>
+
 </body>
 </html>
