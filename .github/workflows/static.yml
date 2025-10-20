@@ -35,7 +35,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          lfs: true   # This is crucial - enables Git LFS checkout
+          # lfs: true   # This is crucial - enables Git LFS checkout
           fetch-depth: 1  # Full history needed for commits
 
       # Configure Git for commits
